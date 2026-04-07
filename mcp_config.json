@@ -25,6 +25,28 @@
         "args": [
             "mcp-server-fetch"
         ]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "."
+      ]
+    },
+    "shell": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@artinet/bash-mcp"
+      ]
     }
   }
 }
