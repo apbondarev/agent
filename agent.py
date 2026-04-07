@@ -2,11 +2,13 @@ import os
 import json
 import asyncio
 from contextlib import AsyncExitStack
-from openai import AsyncOpenAI
+from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+from openai import AsyncOpenAI
 from prompt_toolkit import PromptSession
 from prompt_toolkit.patch_stdout import patch_stdout
+
 
 # ==========================================
 # 1. КОНФИГУРАЦИЯ LLM
@@ -46,8 +48,24 @@ async def main():
         print(f"❌ Ошибка: Файл конфигурации {config_path} не найден!")
         return
 
+    # 1. Загружаем секреты из безопасного места (домашней директории)
+    # Если файла там нет, скрипт просто возьмет переменные вашей ОС
+    env_path = os.path.expanduser("~/.agent_env")
+    load_dotenv(env_path)
+
     with open(config_path, "r", encoding="utf-8") as f:
-        config = json.load(f)
+        raw_config = f.read()
+
+    # 2. Магия подстановки: заменяем все ${VAR_NAME} в тексте на реальные значения 
+    # из переменных окружения
+    expanded_config = os.path.expandvars(raw_config)
+
+    # 3. Теперь парсим готовый JSON со вставленными секретами
+    try:
+        config = json.loads(expanded_config)
+    except json.JSONDecodeError as e:
+        print(f"❌ Ошибка парсинга mcp_config.json (возможно, после подстановки сломался синтаксис): {e}")
+        return
 
     # Словари для хранения сессий и маршрутизации инструментов
     sessions = {}

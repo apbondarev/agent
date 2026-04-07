@@ -8,15 +8,23 @@
         "."
       ]
     },
-    "brave-search": {
+    "yandexSearch": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-brave-search"
-      ],
-      "env": {
-        "BRAVE_API_KEY": "ВАШ_КЛЮЧ_ОТ_BRAVE"
-      }
+        "mcp-remote",
+        "https://d5de9siimt9bkld7viic.emzafcgx.apigw.yandexcloud.net:3000/sse",
+        "--header",
+        "ApiKey: ${YANDEX_API_KEY}",
+        "--header",
+        "FolderId: ${YANDEX_FOLDER_ID}"
+      ]
+    },
+    "fetch": {
+        "command": "uvx",
+        "args": [
+            "mcp-server-fetch"
+        ]
     }
   }
 }
